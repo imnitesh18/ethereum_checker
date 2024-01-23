@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ethereum Balance Checker</title>
+
+    <!-- Add custom CSS -->
+    <style>
+      body {
+        background-color: #000;
+        font-family: "Courier New", Courier, monospace;
+        color: #0f0;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 80px 100px;
+        background-color: #000;
+        border: 2px solid #0f0;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 40px;
+        font-weight: bold;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+      }
+
+      form {
+        margin-bottom: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .form-group label {
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      .form-control {
+        background-color: #000;
+        border-color: #0f0;
+        color: #0f0;
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+
+      .form-control:focus {
+        background-color: #000;
+        border-color: #0f0;
+        color: #0f0;
+        outline: none;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+      }
+
+      .btn-primary {
+        width: 100%;
+        background-color: #0f0;
+        border-color: #0f0;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      .btn-primary:hover {
+        background-color: #090;
+        border-color: #090;
+      }
+
+      .balance {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 30px;
+        font-weight: bold;
+        letter-spacing: 3px;
+      }
+
+      .alert {
+        margin-top: 40px;
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+      .transaction-history{
+        margin-top: 30px;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Ethereum Balance Checker</h1>
+      <form method="post" action="{% url 'fetch_balance' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="ethereum_address">Ethereum Address:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="ethereum_address"
+            name="ethereum_address"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Fetch</button>
+      </form>
+
+      {% if balance %}
+      <div class="balance">Balance: {{ balance }} ETH</div>
+      {% endif %} 
+      {% if balance_usd %}
+      <div class="balance">In Dollar: {{ balance_usd }} USD</div>
+      {% endif %}
+      {% if balance_inr %}
+      <div class="balance">In Rupees: {{ balance_inr }} INR</div>
+      {% endif %}
+      {% if error %}
+      <div class="alert alert-danger" role="alert">{{ error }}</div>
+      {% endif %}
+      {% if transactions %}
+<div class="transaction-history">
+  <h2>Transaction History</h2>
+  <ul>
+    {% for transaction in transactions %}
+    <li>
+      <p>From: {{ transaction.from }}</p>
+      <p>To: {{ transaction.to }}</p>
+      <p>Value: {{ transaction.value }} ETH</p>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+    </div>
+  </body>
+</html>
